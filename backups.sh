@@ -14,10 +14,12 @@ cd ${MYBACKUPDIR}
 
 echo "Backup running to $MYBACKUPDIR" >> /var/log/cron.log
 
+echo "Dump users and permisions"  >> /var/log/cron.log
+pg_dumpall --globals-only | aws s3 cp - s3://${S3_BUCKET}/${S3_BUCKET_PREFIX}/globals.dmp
+
 #
 # Loop through each pg database backing it up
 #
-#echo "Databases to backup: ${DBLIST}" >> /var/log/cron.log
 for DB in ${DBLIST}
 do
   FILENAME=${MYBACKUPDIR}/${DUMPPREFIX}_${DB}.${MYDATE}.dmp
